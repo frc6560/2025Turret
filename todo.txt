@@ -1,0 +1,1 @@
+- switch a and b for auto align
