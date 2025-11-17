@@ -5,7 +5,7 @@
     "id": 13,
     "canbus": "Canivore"
   },
-  "invertedIMU": false,
+  "invertedIMU": false                          ,
   
   "modules": [
     "frontleft.json",
