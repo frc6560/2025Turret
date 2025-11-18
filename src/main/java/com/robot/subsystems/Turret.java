@@ -25,13 +25,19 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class Turret extends SubsystemBase {
 
 /*
     private final DigitalInput topLimitSwitch = new DigitalInput(ElevatorConstants.TopLimitSwitchID);
     private final DigitalInput botLimitSwitch = new DigitalInput(ElevatorConstants.BotLimitSwitchID);
-*/
+*/  
+
+    private final SwerveSubsystem drivebase;
 
     private final TalonFX turretMotor = new TalonFX(TurretConstants.MOTOR_ID, "Canivore");
     
@@ -65,6 +71,11 @@ public class Turret extends SubsystemBase {
     private final MechanismLigament2d turretLigament =
         root.append(new MechanismLigament2d("Turret", 20, 90));
 
+    private boolean locking = false;
+    private Pose2d fieldTarget = null; // field coordinates (meters)
+    private final double turretZeroOffsetRad = 0.0; // adjust if turret zero != robot heading
+
+
     public enum State {
         STOW,
         PICKUP,
@@ -75,8 +86,8 @@ public class Turret extends SubsystemBase {
         IN_MOTION
     }
 
-    public Turret() {
-
+    public Turret(SwerveSubsystem drivebase) {
+        this.drivebase = drivebase;
         // Configure TalonFX
         TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
 
@@ -99,6 +110,25 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putData("TurretMech2d", mech);
     }
 
+    public SwerveSubsystem getDrivebase() {
+        return drivebase;
+    }
+
+    public Pose2d getFieldTarget() {
+        return fieldTarget;
+    }
+
+    public void lockToFieldPoint(Pose2d target) {
+        this.fieldTarget = target;
+        this.locking = true;
+    }
+
+    public void disableLock() {
+        this.locking = false;
+        this.fieldTarget = null;
+        // maybe stop motor or go to default command
+    }
+
     public void setSetpoint(TrapezoidProfile.State nextSetpoint) { turSetpointState = nextSetpoint; }
     
     public TrapezoidProfile.State getSetpoint() { return turSetpointState; }
@@ -108,6 +138,7 @@ public class Turret extends SubsystemBase {
      * @param goalDeg Target angle in degrees
      */
     public void setGoal(double goalDeg) {
+        goalDeg = ((goalDeg % 360) + 360) % 360;
         turGoalState = new TrapezoidProfile.State(goalDeg/360, 0); 
         setControl();
         ntTargetPos.setDouble(goalDeg);
