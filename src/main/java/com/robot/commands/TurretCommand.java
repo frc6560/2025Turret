@@ -5,6 +5,8 @@ import com.robot.Constants.TurretConstants;
 import com.robot.subsystems.Turret;
 import com.robot.subsystems.Turret.State;
 
+import com.robot.utility.LimelightHelpers;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class TurretCommand extends Command {
@@ -24,7 +26,23 @@ public class TurretCommand extends Command {
 
     @Override
     public void execute(){
+    
+    }
 
+    public void periodic() {
+        if (turret.getTurretAngleDeg() < 0) {
+            turret.stopMotor();
+            turret.setGoal(360-Math.abs(turret.getTurretAngleDeg()));
+        } else if (turret.getTurretAngleDeg() > 360) {
+            turret.stopMotor();
+            turret.setGoal(Math.abs(turret.getTurretAngleDeg()));
+        }
+
+        if (LimelightHelpers.getTV("Limelight1")) {
+            LimelightHelpers.getTX("Limelight1");
+            double targetAngle = LimelightHelpers.getTX("Limelight1") + turret.getTurretAngleDeg();
+            turret.setGoal(targetAngle);
+        }
     }
 
     @Override

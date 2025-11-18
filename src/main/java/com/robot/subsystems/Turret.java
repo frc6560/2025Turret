@@ -108,7 +108,7 @@ public class Turret extends SubsystemBase {
      * @param goalDeg Target angle in degrees
      */
     public void setGoal(double goalDeg) {
-        turGoalState = new TrapezoidProfile.State(goalDeg, 0); 
+        turGoalState = new TrapezoidProfile.State(goalDeg/360, 0); 
         setControl();
         ntTargetPos.setDouble(goalDeg);
     }
