@@ -63,7 +63,6 @@ public class TurretCommand extends Command {
         turretLigament.setAngle(angle);
 
         // Update SmartDashboard
-        SmartDashboard.putString("Turret State", turret.getState().toString());
         SmartDashboard.putNumber("Current Angle", angle);
 
         if (turret.getTurretAngleDeg() < 0) {
@@ -93,6 +92,15 @@ public class TurretCommand extends Command {
             turretBaseDeg = ((turretBaseDeg % 360) + 360) % 360;
             turret.setGoal(turretBaseDeg);
         }
+
+        double targetDeg = turret.getGoalValue();
+        double currentDeg = turret.getTurretAngleDeg();
+
+        if (Math.abs(targetDeg - currentDeg) <= 2) {
+            turret.stopMotor();
+            return;
+        }
+
     }
 
     @Override

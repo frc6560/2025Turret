@@ -139,19 +139,21 @@ public class Turret extends SubsystemBase {
      */
     public void setGoal(double goalDeg) {
         goalDeg = ((goalDeg % 360) + 360) % 360;
-        turGoalState = new TrapezoidProfile.State(goalDeg/360, 0); 
+        turGoalState = new TrapezoidProfile.State((goalDeg/360) * 12, 0); 
+
         setControl();
         ntTargetPos.setDouble(goalDeg);
     }
 
     public TrapezoidProfile.State getGoal() { return turGoalState; }
+    public double getGoalValue() { return (turGoalState.position/12)*360;}
 
     
     public double getTurretAngleDeg() {
         // Get position from TalonFX internal encoder (in rotations)
         double rotations = turretMotor.getPosition().getValueAsDouble();
         // Convert rotations back to degrees (reverse the 81:1 gear ratio)
-        double angle = rotations * 360;
+        double angle = (rotations/12) * 360;
         return angle;
     }
 
@@ -168,7 +170,7 @@ public class Turret extends SubsystemBase {
      * @param currentAngleDeg The actual current angle of the turret in degrees
      */
     public void resetEncoderToAngle(double currentAngleDeg) {
-        double rotations = (currentAngleDeg / 360.0);
+        double rotations = (currentAngleDeg / 360.0) * 12;
         turretMotor.setPosition(rotations);
     }
 
@@ -176,26 +178,7 @@ public class Turret extends SubsystemBase {
      * Get the current state of the turret based on its position
      * @return Current turret state
      */
-    public State getState() {
-        double padding = 1.5; // Tolerance in degrees
-        double angle = getTurretAngleDeg();
-
-        if (Math.abs(angle - TurretConstants.STOW_POSITION_DEG) < padding) {
-            return State.STOW;
-        } else if (Math.abs(angle - TurretConstants.PICKUP_POSITION_DEG) < padding) {
-            return State.PICKUP;
-        } else if (Math.abs(angle - TurretConstants.REEF_POSITION_DEG_low) < padding) {
-            return State.REEF_LOW;
-        } else if (Math.abs(angle - TurretConstants.BARGE) < padding) {
-            return State.BARGE;
-        } else if (Math.abs(angle - TurretConstants.PROCESSOR_DEG) < padding) {
-            return State.PROCESSOR;
-        } else if (Math.abs(angle - TurretConstants.REEF_POSITION_DEG_high) < padding){
-            return State.REEF_HIGH;
-        } else {
-            return State.IN_MOTION;
-        }
-    }
+    
 
     public void stopMotor() {
         turretMotor.set(0);
@@ -214,13 +197,21 @@ public class Turret extends SubsystemBase {
         turretLigament.setAngle(angle);
 
         // Update SmartDashboard
-        SmartDashboard.putString("Turret State", getState().toString());
         SmartDashboard.putNumber("Current Angle", angle);
     }
 
     public void setControl() {
         final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
         TrapezoidProfile.State targetState = turretTrapezoidProfile.calculate(0.02, turSetpointState, turGoalState);
+
+        double targetDeg = (targetState.position / 12) * 360.0;
+        double currentDeg = getTurretAngleDeg();
+
+        if (Math.abs(targetDeg - currentDeg) <= 2) {
+            turretMotor.set(0);
+            return;
+        }
+
         m_request.Position = targetState.position;
         m_request.Velocity = targetState.velocity;
         setSetpoint(targetState);
