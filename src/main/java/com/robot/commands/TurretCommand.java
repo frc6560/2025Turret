@@ -45,14 +45,11 @@ public class TurretCommand extends Command {
 
     @Override
     public void initialize() {
+        
     }
 
     @Override
     public void execute(){
-    
-    }
-
-    public void periodic() {
         double angle = turret.getTurretAngleDeg();
         
         // Update NetworkTables
@@ -66,19 +63,19 @@ public class TurretCommand extends Command {
         SmartDashboard.putNumber("Current Angle", angle);
 
         if (turret.getTurretAngleDeg() < 0) {
-            turret.stopMotor();
             turret.setGoal(((turret.getTurretAngleDeg() % 360) + 360) % 360);
         } else if (turret.getTurretAngleDeg() > 360) {
-            turret.stopMotor();
             turret.setGoal(((turret.getTurretAngleDeg() % 360) + 360) % 360);
         }
-
-        if (LimelightHelpers.getTV("Limelight1")) {
-            LimelightHelpers.getTX("Limelight1");
-            double targetAngle = LimelightHelpers.getTX("Limelight1") + turret.getTurretAngleDeg();
-            targetAngle = ((targetAngle % 360) + 360) % 360;
-            turret.setGoal(targetAngle);
-        } else {
+        
+        // if (LimelightHelpers.getTV("Limelight1")) {
+        //     LimelightHelpers.getTX("Limelight1");
+        //     double targetAngle = LimelightHelpers.getTX("Limelight1") + turret.getTurretAngleDeg();
+        //     targetAngle = ((targetAngle % 360) + 360) % 360;
+        //     turret.setGoal(targetAngle);
+        // } else {
+        
+        
             Pose2d robotPose = turret.getDrivebase().getPose();
             Pose2d fieldTarget = turret.getFieldTarget();
 
@@ -91,18 +88,24 @@ public class TurretCommand extends Command {
 
             turretBaseDeg = ((turretBaseDeg % 360) + 360) % 360;
             turret.setGoal(turretBaseDeg);
-        }
+        //}
 
-        double targetDeg = turret.getGoalValue();
-        double currentDeg = turret.getTurretAngleDeg();
+        
 
-        if (Math.abs(targetDeg - currentDeg) <= 2) {
-            turret.stopMotor();
-            return;
-        }
+        
+            double targetDeg = turret.getGoalValue();
+            double currentDeg = turret.getTurretAngleDeg();
+
+            
+    }
+    
+    public void periodic() {
+        
+        //}
+        
 
     }
-
+    
     @Override
     public boolean isFinished() {
         return false; 
@@ -110,6 +113,6 @@ public class TurretCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        turret.stopMotor();
     }
+    
 }

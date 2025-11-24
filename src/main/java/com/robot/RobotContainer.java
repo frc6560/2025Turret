@@ -54,7 +54,7 @@ public class RobotContainer {
     
 
     // Subsystems
-    private final Turret arm = new Turret(drivebase);
+    private final Turret turret = new Turret(drivebase);
     private final BallGrabber ballGrabber = new BallGrabber();
     //private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/falcon"));
 
@@ -124,14 +124,14 @@ SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.co
     
 
     public RobotContainer() {
-      arm.setDefaultCommand(new TurretCommand(arm, controls));
+      turret.setDefaultCommand(new TurretCommand(turret, controls));
 
       
       configureBindings();
       // Default elevator command
 
       DriverStation.silenceJoystickConnectionWarning(true);
-    NamedCommands.registerCommand("test", Commands.print("I EXIST"));
+      NamedCommands.registerCommand("test", Commands.print("I EXIST"));
 
       
         

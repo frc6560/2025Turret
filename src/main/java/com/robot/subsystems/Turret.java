@@ -72,7 +72,7 @@ public class Turret extends SubsystemBase {
         root.append(new MechanismLigament2d("Turret", 20, 90));
 
     private boolean locking = false;
-    private Pose2d fieldTarget = null; // field coordinates (meters)
+    private Pose2d fieldTarget = new Pose2d(1.0, 6.0, new Rotation2d(0)); // field coordinates (meters)
     private final double turretZeroOffsetRad = 0.0; // adjust if turret zero != robot heading
 
 
@@ -139,21 +139,21 @@ public class Turret extends SubsystemBase {
      */
     public void setGoal(double goalDeg) {
         goalDeg = ((goalDeg % 360) + 360) % 360;
-        turGoalState = new TrapezoidProfile.State((goalDeg/360) * 12, 0); 
+        turGoalState = new TrapezoidProfile.State((goalDeg/360) * 25, 0); 
 
         setControl();
         ntTargetPos.setDouble(goalDeg);
     }
 
     public TrapezoidProfile.State getGoal() { return turGoalState; }
-    public double getGoalValue() { return (turGoalState.position/12)*360;}
+    public double getGoalValue() { return (turGoalState.position/25)*360;}
 
     
     public double getTurretAngleDeg() {
         // Get position from TalonFX internal encoder (in rotations)
         double rotations = turretMotor.getPosition().getValueAsDouble();
         // Convert rotations back to degrees (reverse the 81:1 gear ratio)
-        double angle = (rotations/12) * 360;
+        double angle = (rotations/25) * 360;
         return angle;
     }
 
@@ -170,7 +170,7 @@ public class Turret extends SubsystemBase {
      * @param currentAngleDeg The actual current angle of the turret in degrees
      */
     public void resetEncoderToAngle(double currentAngleDeg) {
-        double rotations = (currentAngleDeg / 360.0) * 12;
+        double rotations = (currentAngleDeg / 360.0) * 25;
         turretMotor.setPosition(rotations);
     }
 
@@ -198,25 +198,28 @@ public class Turret extends SubsystemBase {
 
         // Update SmartDashboard
         SmartDashboard.putNumber("Current Angle", angle);
+        
+        setControl();
+        
     }
 
     public void setControl() {
         final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
         TrapezoidProfile.State targetState = turretTrapezoidProfile.calculate(0.02, turSetpointState, turGoalState);
 
-        double targetDeg = (targetState.position / 12) * 360.0;
+        double targetDeg = (targetState.position / 25) * 360.0;
         double currentDeg = getTurretAngleDeg();
-
+        /*
         if (Math.abs(targetDeg - currentDeg) <= 2) {
             turretMotor.set(0);
             return;
         }
+            */
 
         m_request.Position = targetState.position;
         m_request.Velocity = targetState.velocity;
         setSetpoint(targetState);
         turretMotor.setControl(m_request);
-        turretMotor.setPosition(targetState.position);
     }
 
 }

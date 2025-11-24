@@ -152,23 +152,23 @@ public final class Constants
   public static final class TurretConstants
   {
     /** CAN IDs */
-    public static final int MOTOR_ID = 40;      // TODO: set correct ID
+    public static final int MOTOR_ID = 13;      // TODO: set correct ID
     public static final int ENCODER_ID = 0;    // TODO: set correct ID
 
     /** Characterization Gains */
-    public static final double kS = 0.0;
-    public static final double kV = 0.0;
-    public static final double kA = 0.0;
+    public static final double kS = 0.1;
+    public static final double kV = 0.2;
+    public static final double kA = 0.01;
     public static final double kG = 0.0;
 
     /** PID Gains */
     public static final double kP = 4;
     public static final double kI = 0.0;
-    public static final double kD = 0.0;
+    public static final double kD = 0.1;
 
     /** Motion Constraints */
-    public static final double kMaxV = 128000; // m/s
-    public static final double kMaxA = 128000; // m/s^2
+    public static final double kMaxV = 5; // m/s
+    public static final double kMaxA = 20; // m/s^2
 
     /** Turret PID Gains */
     public static final double ARM_KP = 3.5;
@@ -180,8 +180,8 @@ public final class Constants
     public static final double ARM_KA = 0.0;
 
     /** Turret Geometry */
-    public static final double MOTOR_GEAR_RATIO = 108.0; // Motor reduction ratio
-    public static final double ENCODER_GEAR_RATIO = 81.0; // Encoder reduction ratio
+    public static final double MOTOR_GEAR_RATIO = 25.0; // Motor reduction ratio
+    public static final double ENCODER_GEAR_RATIO = 1; // Encoder reduction ratio
     public static final double ARM_LENGTH_METERS = 0.5; // TODO: measure (m)
     public static final double ARM_MASS_KG = 5.0;       // TODO: measure (kg)
     public static final double MAX_ANGLE_DEG = 0.0;
