@@ -125,6 +125,7 @@ SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.co
 
     public RobotContainer() {
       turret.setDefaultCommand(new TurretCommand(turret, controls));
+      drivebase.resetOdometry(new Pose2d(1, 4, Rotation2d.fromDegrees(0)));
 
       
       configureBindings();

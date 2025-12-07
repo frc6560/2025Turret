@@ -72,7 +72,7 @@ public class Turret extends SubsystemBase {
         root.append(new MechanismLigament2d("Turret", 20, 90));
 
     private boolean locking = false;
-    private Pose2d fieldTarget = new Pose2d(1.0, 6.0, new Rotation2d(0)); // field coordinates (meters)
+    private Pose2d fieldTarget = new Pose2d(1.0, 4.0, new Rotation2d(0)); // field coordinates (meters)
     private final double turretZeroOffsetRad = 0.0; // adjust if turret zero != robot heading
 
 

@@ -48,44 +48,7 @@ public class TurretCommand extends Command {
         
     }
 
-    public void periodic() {
-        double angle = turret.getTurretAngleDeg();
-        
-        // Update NetworkTables
-        ntAngle.setDouble(angle);
-        ntPosition.setDouble(angle);
-        
-        // Update Mechanism2d visualization
-        turretLigament.setAngle(angle);
-
-        // Update SmartDashboard
-        SmartDashboard.putNumber("Current Angle", angle);
-        
-        // if (LimelightHelpers.getTV("Limelight1")) {
-        //     LimelightHelpers.getTX("Limelight1");
-        //     double targetAngle = LimelightHelpers.getTX("Limelight1") + turret.getTurretAngleDeg();
-        //     targetAngle = ((targetAngle % 360) + 360) % 360;
-        //     turret.setGoal(targetAngle);
-        // } else {
-        
-        
-            Pose2d robotPose = turret.getDrivebase().getPose();
-            Pose2d fieldTarget = turret.getFieldTarget();
-
-            double dx = fieldTarget.getX() - robotPose.getX();
-            double dy = fieldTarget.getY() - robotPose.getY();
-            double odomTargetAngleDeg = Math.toDegrees(Math.atan2(dy, dx));
-        
-            double robotHeadingDeg = robotPose.getRotation().getDegrees();
-            double turretBaseDeg = odomTargetAngleDeg - robotHeadingDeg;
-
-            turretBaseDeg = ((turretBaseDeg % 360) + 360) % 360;
-        //}
-            double targetDeg = turret.getGoalValue();
-            double currentDeg = turret.getTurretAngleDeg();
-            //if (targetDeg + 1 >|| targetDeg - 1)
-
-    }
+    
     public void execute(){
         double angle = turret.getTurretAngleDeg();
         
@@ -136,6 +99,9 @@ public class TurretCommand extends Command {
             
     }
     
+    public void periodic(){
+
+    }
     
     @Override
     public boolean isFinished() {
