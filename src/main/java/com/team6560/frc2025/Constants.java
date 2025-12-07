@@ -6,6 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -85,6 +86,85 @@ public final class Constants {
     
   }
 
+   public static final class HoodandFlywheelConstants {
+        // Hardware IDs
+        public static final int RIGHT_FLYWHEEL_MOTOR_ID = 10;
+        public static final int LEFT_FLYWHEEL_MOTOR_ID = 11;
+        public static final int HOOD_MOTOR_ID = 12;
+        public static final String CANIVORE_BUS = "canivore";
+        
+        // Gear Ratios
+        public static final double FLYWHEEL_GEAR_RATIO = 25.0 / 24.0;  // 25:24
+        public static final double HOOD_GEAR_RATIO = 25.0;  // 25:1 (25 rotations per 1 degree)
+        
+        // Idle Mode
+        public static final double IDLE_RPM = 1000.0;
+        public static final double HOOD_IDLE_ANGLE = 20.0;
+        
+        // PID Constants - Flywheel
+        public static final double FLYWHEEL_KP = 0.1;
+        public static final double FLYWHEEL_KI = 0.0;
+        public static final double FLYWHEEL_KD = 0.0;
+        public static final double FLYWHEEL_KV = 0.12;
+        
+        // PID Constants - Hood
+        public static final double HOOD_KP = 10.0;
+        public static final double HOOD_KI = 0.0;
+        public static final double HOOD_KD = 0.5;
+        public static final double HOOD_KG = 0.3;  // Gravity compensation
+        
+        // Tolerances
+        public static final double RPM_TOLERANCE = 100.0;
+        public static final double HOOD_TOLERANCE = 1.0;
+        
+        // Soft Limits (degrees)
+        public static final double HOOD_MIN_ANGLE = 15.0;
+        public static final double HOOD_MAX_ANGLE = 60.0;
+        
+        // Current Limits (amps)
+        public static final double FLYWHEEL_CURRENT_LIMIT = 60.0;
+        public static final double HOOD_CURRENT_LIMIT = 40.0;
+        
+        // Field Positions (meters) - UPDATE THESE FOR YOUR FIELD
+        public static final Translation2d BLUE_SIDE = new Translation2d(0.0, 5.5);
+        public static final Translation2d RED_SIDE = new Translation2d(16.54, 5.5);
+        
+        // Lookup Table Data for Linear Regression
+        // Key = Distance in meters, Value = RPM or Hood Angle
+        // REPLACE THESE WITH YOUR TESTED VALUES
+        public static final double[] DISTANCE_TABLE = {
+            1.5,   // Very close
+            2.0,   // Close
+            2.5,   // Medium-close
+            3.0,   // Medium
+            3.5,   // Medium-far
+            4.0,   // Far
+            4.5,   // Very far
+            5.0    // Maximum range
+        };
+        
+        public static final double[] RPM_TABLE = {
+            2500,  // 1.5m
+            2700,  // 2.0m
+            2900,  // 2.5m
+            3100,  // 3.0m
+            3300,  // 3.5m
+            3500,  // 4.0m
+            3700,  // 4.5m
+            3900   // 5.0m
+        };
+        
+        public static final double[] HOOD_TABLE = {
+            55,  // 1.5m - steep angle
+            50,  // 2.0m
+            45,  // 2.5m
+            40,  // 3.0m
+            35,  // 3.5m
+            30,  // 4.0m
+            25,  // 4.5m
+            20   // 5.0m - flat angle
+        };
+    }
   public static final class ElevatorConstants {
 
     public static int ELEV_LEFT_ID = 14;
