@@ -39,7 +39,7 @@ public class Turret extends SubsystemBase {
 
     private final SwerveSubsystem drivebase;
 
-    private final TalonFX turretMotor = new TalonFX(TurretConstants.MOTOR_ID, "Canivore");
+    private final TalonFX turretMotor = new TalonFX(TurretConstants.MOTOR_ID, "rio");
     
     private final ArmFeedforward turretFeedForward = new ArmFeedforward(
         TurretConstants.kS, TurretConstants.kV, TurretConstants.kA);
