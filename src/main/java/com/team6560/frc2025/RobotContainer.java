@@ -131,7 +131,7 @@ public class RobotContainer {
     // }
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    RobotModeTriggers.autonomous().whileTrue(lollipopauto());
+    //RobotModeTriggers.autonomous().whileTrue(lollipopauto());
   }
 
   private void configureBindings() { 
@@ -220,7 +220,10 @@ public class RobotContainer {
     );
   }
   
-  
+  public Command getAutonomousCommand() {
+    return lollipopauto();
+  }
+
   // don't randomly brake/unbrake chassis
   public void setMotorBrake(boolean brake) {
     // drivebase.setMotorBrake(brake);
