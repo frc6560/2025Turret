@@ -21,7 +21,8 @@ import com.team6560.frc2025.Constants.DrivebaseConstants;
 import com.team6560.frc2025.utility.LimelightHelpers;
 import com.team6560.frc2025.utility.LimelightHelpers.PoseEstimate;
 import com.team6560.frc2025.utility.Setpoint;
-
+import choreo.*;
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -131,6 +132,7 @@ public class SwerveSubsystem extends SubsystemBase
     setupPathPlanner();
 
     swerveDrive.setVisionMeasurementStdDevs(visionStdDevs);
+    m_pidControllerTheta.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   /**
@@ -278,37 +280,52 @@ public class SwerveSubsystem extends SubsystemBase
 
   /** Full PID commands with all three parameters
    */
-  public void followSegment(Setpoint setpoint, Pose2d targetPose, boolean isIntake) {
-    m_pidControllerTheta_pose.enableContinuousInput(-Math.PI, Math.PI);
-    Pose2d pose = getPose();
-    swerveDrive.field.getObject("TargetPose").setPose(targetPose);
-    if(!isIntake){
-      m_pidControllerX_pose.setPID(DrivebaseConstants.kP_translation_pose, 
-                            DrivebaseConstants.kI_translation_pose, 
-                            DrivebaseConstants.kD_translation_pose);
-      m_pidControllerY_pose.setPID(DrivebaseConstants.kP_translation_pose, 
-                            DrivebaseConstants.kI_translation_pose, 
-                            DrivebaseConstants.kD_translation_pose);
-    }
-    else{
-      m_pidControllerX_pose.setPID(DrivebaseConstants.kP_translation_intake, 
-                            DrivebaseConstants.kI_translation_intake, 
-                            DrivebaseConstants.kD_translation_intake);
-      m_pidControllerY_pose.setPID(DrivebaseConstants.kP_translation_intake, 
-                            DrivebaseConstants.kI_translation_intake, 
-                            DrivebaseConstants.kD_translation_intake);
-    }
-    m_pidControllerTheta_pose.setIZone(0.08);
-    m_pidControllerX_pose.setIZone(0.5);
-    m_pidControllerY_pose.setIZone(0.5);
+  // public void followSegment(Setpoint setpoint, Pose2d targetPose, boolean isIntake) {
+  //   m_pidControllerTheta_pose.enableContinuousInput(-Math.PI, Math.PI);
+  //   Pose2d pose = getPose();
+  //   swerveDrive.field.getObject("TargetPose").setPose(targetPose);
+  //   if(!isIntake){
+  //     m_pidControllerX_pose.setPID(DrivebaseConstants.kP_translation_pose, 
+  //                           DrivebaseConstants.kI_translation_pose, 
+  //                           DrivebaseConstants.kD_translation_pose);
+  //     m_pidControllerY_pose.setPID(DrivebaseConstants.kP_translation_pose, 
+  //                           DrivebaseConstants.kI_translation_pose, 
+  //                           DrivebaseConstants.kD_translation_pose);
+  //   }
+  //   else{
+  //     m_pidControllerX_pose.setPID(DrivebaseConstants.kP_translation_intake, 
+  //                           DrivebaseConstants.kI_translation_intake, 
+  //                           DrivebaseConstants.kD_translation_intake);
+  //     m_pidControllerY_pose.setPID(DrivebaseConstants.kP_translation_intake, 
+  //                           DrivebaseConstants.kI_translation_intake, 
+  //                           DrivebaseConstants.kD_translation_intake);
+  //   }
+  //   m_pidControllerTheta_pose.setIZone(0.08);
+  //   m_pidControllerX_pose.setIZone(0.5);
+  //   m_pidControllerY_pose.setIZone(0.5);
 
-    ChassisSpeeds targetSpeeds = new ChassisSpeeds( 
-      setpoint.vx + m_pidControllerX_pose.calculate(pose.getX(), setpoint.x), 
-      setpoint.vy + m_pidControllerY_pose.calculate(pose.getY(), setpoint.y),
-      (-1) * (setpoint.omega + m_pidControllerTheta_pose.calculate(pose.getRotation().getRadians(), setpoint.theta))
-    );
-    swerveDrive.driveFieldOriented(targetSpeeds);
-  }
+  //   ChassisSpeeds targetSpeeds = new ChassisSpeeds( 
+  //     setpoint.vx + m_pidControllerX_pose.calculate(pose.getX(), setpoint.x), 
+  //     setpoint.vy + m_pidControllerY_pose.calculate(pose.getY(), setpoint.y),
+  //     (-1) * (setpoint.omega + m_pidControllerTheta_pose.calculate(pose.getRotation().getRadians(), setpoint.theta))
+  //   );
+  //   swerveDrive.driveFieldOriented(targetSpeeds);
+  // }
+
+  public void followTrajectory(SwerveSample sample) {
+        // Get the current pose of the robot
+        Pose2d pose = getPose();
+
+        // Generate the next speeds for the robot
+        ChassisSpeeds speeds = new ChassisSpeeds(
+            sample.vx + m_pidControllerX_pose.calculate(pose.getX(), sample.x),
+            sample.vy + m_pidControllerY_pose.calculate(pose.getY(), sample.y),
+            sample.omega + m_pidControllerTheta_pose.calculate(pose.getRotation().getRadians(), sample.heading)
+        );
+
+        // Apply the generated speeds
+        swerveDrive.driveFieldOriented(speeds);
+    }
   
 
   /** PID output over robot relative theta */

@@ -20,9 +20,12 @@ import com.team6560.frc2025.subsystems.swervedrive.SwerveSubsystem;
 import com.team6560.frc2025.utility.Enums.ReefLevel;
 import com.team6560.frc2025.subsystems.LocationManager;
 import com.team6560.frc2025.autonomous.Auto;
-import com.team6560.frc2025.autonomous.AutoFactory;
+//import com.team6560.frc2025.autonomous.AutoFactory;
 import com.team6560.frc2025.autonomous.AutoRoutines;
 
+import choreo.*;
+import choreo.auto.AutoFactory;
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -34,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.io.File;
@@ -61,11 +65,10 @@ public class RobotContainer {
   private final BallGrabberCommand ballGrabberCommand;
   private final Wrist wrist;
   private final Elevator elevator = new Elevator();
-
+  private final AutoFactory autoFactory;
   private final CoralScoreCommandFactory scoreFactory;
 
   private final SendableChooser<Auto> autoChooser;
-  private final AutoFactory factory;
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(
     drivebase.getSwerveDrive(),
@@ -93,36 +96,42 @@ public class RobotContainer {
     pipeGrabber = new PipeGrabber();
     pipeGrabberCommand = new PipeGrabberCommand(pipeGrabber, controls, buttonBoard);
     pipeGrabber.setDefaultCommand(pipeGrabberCommand);
-
+    
     wrist = new Wrist();
     wrist.setDefaultCommand(new WristCommand(wrist, controls));
     elevator.setDefaultCommand(new ElevatorCommand(elevator, controls));
 
     scoreFactory = new CoralScoreCommandFactory(wrist, elevator, pipeGrabber, drivebase, ballGrabber);
 
-    configureBindings();
-
-    factory = new AutoFactory(
-      null,
-      wrist,
-      elevator,
-      drivebase,
-      pipeGrabber
-    );
+    // configureBindings();
+    autoFactory = new AutoFactory(
+    drivebase::getPose,
+    drivebase::resetOdometry,
+    drivebase::followTrajectory,
+    true,
+    drivebase);
+    // factory = new AutoFactory(
+    //   null,
+    //   wrist,
+    //   elevator,
+    //   drivebase,
+    //   pipeGrabber
+    // );
 
     autoChooser = new SendableChooser<Auto>();
 
-    for(AutoRoutines auto : AutoRoutines.values()) {
-      Auto autonomousRoutine = new Auto(auto, factory);
-      if(auto == AutoRoutines.TEST){
-        autoChooser.setDefaultOption(autonomousRoutine.getName(), autonomousRoutine);
-      }
-      else {
-        autoChooser.addOption(autonomousRoutine.getName(), autonomousRoutine);
-      }
-    }
+    // for(AutoRoutines auto : AutoRoutines.values()) {
+    //   Auto autonomousRoutine = new Auto(auto, autoFactory);
+    //   if(auto == AutoRoutines.TEST){
+    //     autoChooser.setDefaultOption(autonomousRoutine.getName(), autonomousRoutine);
+    //   }
+    //   else {
+    //     autoChooser.addOption(autonomousRoutine.getName(), autonomousRoutine);
+    //   }
+    // }
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    RobotModeTriggers.autonomous().whileTrue(lollipopauto());
   }
 
   private void configureBindings() { 
@@ -202,10 +211,15 @@ public class RobotContainer {
   public void resetLLBeforeAuto() {
   }
 
-
-  public Auto getAutonomousCommand() {
-    return autoChooser.getSelected();
+  public Command lollipopauto(){
+    return Commands.sequence(
+        autoFactory.resetOdometry("offsznauto1"),
+        autoFactory.trajectoryCmd("offsznauto1"),
+        autoFactory.trajectoryCmd("offsznauto2"),
+        autoFactory.trajectoryCmd("offsznauto3")
+    );
   }
+  
   
   // don't randomly brake/unbrake chassis
   public void setMotorBrake(boolean brake) {
