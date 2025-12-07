@@ -70,9 +70,9 @@ public class HoodandFlywheel extends SubsystemBase {
     this.hoodandflywheelTable = NetworkTableInstance.getDefault().getTable("HoodandFlywheel");
 
     // Initialize hardware
-    this.leftFlywheelMotor = new TalonFX(HoodandFlywheelConstants.LEFT_FLYWHEEL_MOTOR_ID);
-    this.rightFlywheelMotor = new TalonFX(HoodandFlywheelConstants.RIGHT_FLYWHEEL_MOTOR_ID);
-    this.hoodMotor = new TalonFX(HoodandFlywheelConstants.HOOD_MOTOR_ID);
+    this.leftFlywheelMotor = new TalonFX(HoodandFlywheelConstants.LEFT_FLYWHEEL_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
+    this.rightFlywheelMotor = new TalonFX(HoodandFlywheelConstants.RIGHT_FLYWHEEL_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
+    this.hoodMotor = new TalonFX(HoodandFlywheelConstants.HOOD_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
 
     // config harware 
     configureFlywheel(leftFlywheelMotor, false); 
@@ -350,6 +350,16 @@ private void configureHood(TalonFX motor) {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Shooter/Current RPM", getFlywheelRPM());
+    SmartDashboard.putNumber("Shooter/Current Hood", getHoodAngle());
+    SmartDashboard.putBoolean("Shooter/Ready", isReadyToShoot());
+    SmartDashboard.putNumber("Shooter/RPM R²", rpmRegression.rSquared);
+    SmartDashboard.putNumber("Shooter/Hood R²", hoodRegression.rSquared);
+    
+    hoodandflywheelTable.getEntry("rpm").setDouble(getFlywheelRPM());
+    hoodandflywheelTable.getEntry("hood").setDouble(getHoodAngle());
+    hoodandflywheelTable.getEntry("ready").setBoolean(isReadyToShoot());
+}
     // This method will be called once per scheduler run
-  }
+  
 }

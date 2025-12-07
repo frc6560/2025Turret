@@ -36,24 +36,24 @@ public class XboxControls {
 
     // --- CLIMB ---
 
-    //public boolean getClimbDown() {
-    //  return firstXbox.getRightBumperButton(); 
-   // }
+    public boolean getClimbDown() {
+      return firstXbox.getBackButton(); 
+    }
 
-   // public boolean getClimbUp() {
-   //   return firstXbox.getLeftBumperButton();
-   // }
+    public boolean getClimbUp() {
+     return firstXbox.getBackButton();
+    }
 
     // // --- SUPERSTRUCTURE ---
-    //public boolean goToPickup(){
-    //    return firstXbox.getRightTriggerAxis() > 0.25;
-    //}
+    public boolean goToPickup(){
+       return firstXbox.getBackButton();
+    }
 
     // --- END EFFECTORS ---
 
- //   public boolean runGrabberOuttake() {
- //     return firstXbox.getLeftTriggerAxis() > 0.25;
-  //  }
+   public boolean runGrabberOuttake() {
+     return firstXbox.getLeftTriggerAxis() > 0.25;
+    }
 
 public boolean aimhoodandflywheel() {
     return firstXbox.getRightTriggerAxis() > 0.25;   
@@ -77,11 +77,11 @@ public boolean zeroHood() {
 
 // Manual adjustment controls
 public boolean increaseRPM() {
-  return firstXbox.getLeftBumperButton();
+  return firstXbox.getXButton();
 }
 
 public boolean decreaseRPM() {
-  return firstXbox.getRightBumperButton();
+  return firstXbox.getStartButton();
 }
 
 public boolean increaseHood() {
