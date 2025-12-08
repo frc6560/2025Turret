@@ -89,7 +89,7 @@ public final class Constants {
    public static final class HoodandFlywheelConstants {
         // Hardware IDs
         public static final int RIGHT_FLYWHEEL_MOTOR_ID = 10;
-        public static final int LEFT_FLYWHEEL_MOTOR_ID = 11;
+        public static final int LEFT_FLYWHEEL_MOTOR_ID = 16;
         public static final int HOOD_MOTOR_ID = 12;
         public static final String CANIVORE_BUS = "canivore";
         

@@ -22,6 +22,9 @@ import com.team6560.frc2025.subsystems.LocationManager;
 import com.team6560.frc2025.autonomous.Auto;
 import com.team6560.frc2025.autonomous.AutoFactory;
 import com.team6560.frc2025.autonomous.AutoRoutines;
+import com.team6560.frc2025.subsystems.HoodandFlywheel;
+import com.team6560.frc2025.commands.HoodandFlywheelCommand;
+import com.team6560.frc2025.Constants.HoodandFlywheelConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -61,6 +64,9 @@ public class RobotContainer {
   private final BallGrabberCommand ballGrabberCommand;
   private final Wrist wrist;
   private final Elevator elevator = new Elevator();
+  private final HoodandFlywheel hoodandFlywheel = new HoodandFlywheel(drivebase);
+  
+
 
   private final CoralScoreCommandFactory scoreFactory;
 
@@ -252,5 +258,9 @@ public class RobotContainer {
 
   public LocationManager getLocationManager() {
     return locationManager;
+  }
+  
+  public HoodandFlywheel getHoodandFlywheel() {
+    return hoodandFlywheel;
   }
 }

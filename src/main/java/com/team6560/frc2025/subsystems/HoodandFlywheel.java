@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.team6560.frc2025.Constants.HoodandFlywheelConstants;
+import com.team6560.frc2025.subsystems.swervedrive.SwerveSubsystem;
 
 public class HoodandFlywheel extends SubsystemBase {
   public interface getSwerveDrive {
@@ -52,7 +53,7 @@ public class HoodandFlywheel extends SubsystemBase {
   private final PositionVoltage hoodPositionControl;
 
   //Drivetrain reference for pose 
-  private final getSwerveDrive drivetrain;
+  private final SwerveSubsystem drivetrain;
 
   // linear regression models 
   private final RegressionCoefficients rpmRegression;
@@ -65,8 +66,8 @@ public class HoodandFlywheel extends SubsystemBase {
   //Netwrork table 
   private final NetworkTable hoodandflywheelTable;
   /** Creates a new HoodandFlywheel. */
-  public HoodandFlywheel(getSwerveDrive drivetrain) {
-    this.drivetrain = drivetrain;
+  public HoodandFlywheel(SwerveSubsystem drivebase) {
+    this.drivetrain = drivebase;
     this.hoodandflywheelTable = NetworkTableInstance.getDefault().getTable("HoodandFlywheel");
 
     // Initialize hardware
