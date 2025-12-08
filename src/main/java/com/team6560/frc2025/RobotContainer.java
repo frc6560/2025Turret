@@ -213,10 +213,10 @@ public class RobotContainer {
 
   public Command lollipopauto(){
     return Commands.sequence(
-        autoFactory.resetOdometry("offsznauto1"),
-        autoFactory.trajectoryCmd("offsznauto1"),
-        autoFactory.trajectoryCmd("offsznauto2"),
-        autoFactory.trajectoryCmd("offsznauto3")
+        autoFactory.resetOdometry("auto1"),
+        autoFactory.trajectoryCmd("auto1"),
+        autoFactory.trajectoryCmd("auto2"),
+        autoFactory.trajectoryCmd("auto3")
     );
   }
   
