@@ -104,6 +104,9 @@ public class RobotContainer {
     wrist.setDefaultCommand(new WristCommand(wrist, controls));
     elevator.setDefaultCommand(new ElevatorCommand(elevator, controls));
 
+    HoodandFlywheelCommand hoodandFlywheelCommand = new HoodandFlywheelCommand(hoodandFlywheel, controls);
+    hoodandFlywheel.setDefaultCommand(hoodandFlywheelCommand);
+
     scoreFactory = new CoralScoreCommandFactory(wrist, elevator, pipeGrabber, drivebase, ballGrabber);
 
     configureBindings();
