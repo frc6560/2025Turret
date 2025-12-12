@@ -21,7 +21,8 @@ import com.robot.Constants.DrivebaseConstants;
 import com.robot.utility.LimelightHelpers;
 import com.robot.utility.LimelightHelpers.PoseEstimate;
 import com.robot.utility.Setpoint;
-
+import static edu.wpi.first.units.Units.Meter;
+import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -278,35 +279,27 @@ public class SwerveSubsystem extends SubsystemBase
 
   /** Full PID commands with all three parameters
    */
-  public void followSegment(Setpoint setpoint, Pose2d targetPose, boolean isIntake) {
-    m_pidControllerTheta_pose.enableContinuousInput(-Math.PI, Math.PI);
+  public void followTrajectory(SwerveSample setpoint) {
+    m_pidControllerTheta.enableContinuousInput(-Math.PI, Math.PI);
     Pose2d pose = getPose();
-    swerveDrive.field.getObject("TargetPose").setPose(targetPose);
-    if(!isIntake){
-      m_pidControllerX_pose.setPID(DrivebaseConstants.kP_translation_pose, 
-                            DrivebaseConstants.kI_translation_pose, 
-                            DrivebaseConstants.kD_translation_pose);
-      m_pidControllerY_pose.setPID(DrivebaseConstants.kP_translation_pose, 
-                            DrivebaseConstants.kI_translation_pose, 
-                            DrivebaseConstants.kD_translation_pose);
-    }
-    else{
-      m_pidControllerX_pose.setPID(DrivebaseConstants.kP_translation_intake, 
-                            DrivebaseConstants.kI_translation_intake, 
-                            DrivebaseConstants.kD_translation_intake);
-      m_pidControllerY_pose.setPID(DrivebaseConstants.kP_translation_intake, 
-                            DrivebaseConstants.kI_translation_intake, 
-                            DrivebaseConstants.kD_translation_intake);
-    }
-    m_pidControllerTheta_pose.setIZone(0.08);
-    m_pidControllerX_pose.setIZone(0.5);
-    m_pidControllerY_pose.setIZone(0.5);
+    m_pidControllerX.setIZone(0.5);
+    m_pidControllerY.setIZone(0.5);
+    m_pidControllerTheta.setIZone(0.08);
 
     ChassisSpeeds targetSpeeds = new ChassisSpeeds( 
-      setpoint.vx + m_pidControllerX_pose.calculate(pose.getX(), setpoint.x), 
-      setpoint.vy + m_pidControllerY_pose.calculate(pose.getY(), setpoint.y),
-      (-1) * (setpoint.omega + m_pidControllerTheta_pose.calculate(pose.getRotation().getRadians(), setpoint.theta))
+      setpoint.vx + m_pidControllerX.calculate(pose.getX(), setpoint.x), 
+      setpoint.vy + m_pidControllerY.calculate(pose.getY(), setpoint.y),
+      setpoint.omega + m_pidControllerTheta.calculate(pose.getRotation().getRadians(), setpoint.heading)
     );
+
+    // Log some basic data to see if path following is accurate.
+    swerveDrive.field.getObject("TargetPose").setPose(setpoint.getPose());
+    SmartDashboard.getEntry("X Error").setDouble(m_pidControllerX.getError());
+    SmartDashboard.getEntry("Y Error").setDouble(m_pidControllerY.getError());
+    SmartDashboard.getEntry("Theta Error").setDouble(m_pidControllerTheta.getError());
+    SmartDashboard.getEntry("VX Error").setDouble(Math.abs(setpoint.vx - swerveDrive.getRobotVelocity().vxMetersPerSecond));
+    SmartDashboard.getEntry("VY Error").setDouble(Math.abs(setpoint.vy - swerveDrive.getRobotVelocity().vyMetersPerSecond));
+
     swerveDrive.driveFieldOriented(targetSpeeds);
   }
   

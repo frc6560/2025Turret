@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj.RobotBase;
 
 import java.io.File;
 
+import choreo.*;
+import choreo.auto.AutoFactory;
+
 import com.pathplanner.lib.auto.NamedCommands;
 import com.robot.Constants.ElevatorConstants;
 import com.robot.Constants.OperatorConstants;
@@ -46,6 +49,7 @@ public class RobotContainer {
     private final XboxController firstXbox = new XboxController(0);
     private final XboxController secondXbox = new XboxController(1);
     private final ManualControls controls = new ManualControls(firstXbox, secondXbox);
+    private final AutoFactory autoFactory;
 
      // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
@@ -124,6 +128,14 @@ SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.co
     
 
     public RobotContainer() {
+
+      autoFactory = new AutoFactory(
+        drivebase::getPose,
+        drivebase::resetOdometry,
+        drivebase::followTrajectory,
+        true,
+        drivebase);
+
       turret.setDefaultCommand(new TurretCommand(turret, controls));
       drivebase.resetOdometry(new Pose2d(1, 4, Rotation2d.fromDegrees(0)));
 
@@ -135,7 +147,7 @@ SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.co
       NamedCommands.registerCommand("test", Commands.print("I EXIST"));
 
       
-        
+      
       ballGrabber.setDefaultCommand(new BallGrabberCommand(ballGrabber, controls));
       
 
