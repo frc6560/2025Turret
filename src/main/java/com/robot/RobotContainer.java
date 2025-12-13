@@ -247,7 +247,7 @@ SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.co
     }
 
     public Command getAutonomousCommand() {
-      return test();
+      return lollipopauto();
     }
   
   
