@@ -224,8 +224,22 @@ SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.co
     
     }
 
-    public Command getAutonomousCommand() {
-      return Commands.run(() -> drivebase.drive(new ChassisSpeeds(-0.5, 0, 0)), drivebase).withTimeout(2);
+    // public Command getAutonomousCommand() {
+    //   return Commands.run(() -> drivebase.drive(new ChassisSpeeds(-0.5, 0, 0)), drivebase).withTimeout(2);
+    // }
+
+    public Command lollipopauto(){
+      return Commands.sequence(
+          autoFactory.resetOdometry("auto1"),
+          autoFactory.trajectoryCmd("auto1"),
+          autoFactory.trajectoryCmd("auto2"),
+          autoFactory.trajectoryCmd("auto3")
+      );
     }
+    
+    public Command getAutonomousCommand() {
+      return lollipopauto();
+    }
+  
   
 }
