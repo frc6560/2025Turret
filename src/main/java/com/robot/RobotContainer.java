@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.RobotBase;
 
 import java.io.File;
+import java.time.temporal.Temporal;
 
 import choreo.*;
 import choreo.auto.AutoFactory;
@@ -237,8 +238,16 @@ SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.co
       );
     }
     
+    public Command test(){
+      return Commands.sequence(
+          autoFactory.resetOdometry("autotest"),
+          
+          autoFactory.trajectoryCmd("autotest")
+      );
+    }
+
     public Command getAutonomousCommand() {
-      return lollipopauto();
+      return test();
     }
   
   
