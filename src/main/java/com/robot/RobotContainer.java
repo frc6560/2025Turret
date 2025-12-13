@@ -134,7 +134,7 @@ SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.co
         drivebase::getPose,
         drivebase::resetOdometry,
         drivebase::followTrajectory,
-        true,
+        false,
         drivebase);
 
       turret.setDefaultCommand(new TurretCommand(turret, controls));
