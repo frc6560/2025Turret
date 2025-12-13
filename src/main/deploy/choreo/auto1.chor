@@ -1,5 +1,5 @@
 {
- "name":"Untitled",
+ "name":"auto1",
  "version":1,
  "type":"Swerve",
  "variables":{
@@ -9,51 +9,51 @@
  "config":{
   "frontLeft":{
    "x":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"0.273 m",
+    "val":0.273
    },
    "y":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"0.273 m",
+    "val":0.273
    }
   },
   "backLeft":{
    "x":{
-    "exp":"-11 in",
-    "val":-0.2794
+    "exp":"-0.273 m",
+    "val":-0.273
    },
    "y":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"0.273 m",
+    "val":0.273
    }
   },
   "mass":{
-   "exp":"150 lbs",
-   "val":68.0388555
+   "exp":"52.09 lbs",
+   "val":23.627626553300004
   },
   "inertia":{
-   "exp":"6 kg m ^ 2",
-   "val":6.0
+   "exp":"2.67 kg m ^ 2",
+   "val":2.67
   },
   "gearing":{
    "exp":"6.5",
    "val":6.5
   },
   "radius":{
-   "exp":"2 in",
-   "val":0.0508
+   "exp":"0.048 m",
+   "val":0.048
   },
   "vmax":{
    "exp":"6000 RPM",
    "val":628.3185307179587
   },
   "tmax":{
-   "exp":"1.2 N * m",
-   "val":1.2
+   "exp":"7 N * m",
+   "val":7.0
   },
   "cof":{
-   "exp":"1.5",
-   "val":1.5
+   "exp":"1.19",
+   "val":1.19
   },
   "bumper":{
    "front":{
