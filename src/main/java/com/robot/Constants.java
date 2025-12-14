@@ -32,8 +32,8 @@ public final class Constants
     public static final double WHEEL_LOCK_TIME = 10; // seconds
 
     // Max velocities and accelerations for auto
-    public static final double kMaxAutoVelocity = 3; 
-    public static final double kMaxAutoAcceleration = 3; 
+    public static final double kMaxAutoVelocity = 1.5; 
+    public static final double kMaxAutoAcceleration = 1.5; 
 
     // Max velocities and accelerations for teleop alignment
     public static final double kHandoffVelocity = 0.5;   // formerly 2.1
