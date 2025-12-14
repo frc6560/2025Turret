@@ -79,8 +79,8 @@ public class TurretCommand extends Command {
             Pose2d robotPose = turret.getDrivebase().getPose();
             Pose2d fieldTarget = turret.getFieldTarget();
 
-            double dx = fieldTarget.getX() - robotPose.getX();
-            double dy = fieldTarget.getY() - robotPose.getY();
+            double dx = robotPose.getX() - fieldTarget.getX();
+            double dy = robotPose.getY() - fieldTarget.getY();
             double odomTargetAngleDeg = Math.toDegrees(Math.atan2(dy, dx));
         
             double robotHeadingDeg = robotPose.getRotation().getDegrees();

@@ -167,8 +167,8 @@ public final class Constants
     public static final double kD = 0.1;
 
     /** Motion Constraints */
-    public static final double kMaxV = 15; // m/s
-    public static final double kMaxA = 20; // m/s^2
+    public static final double kMaxV = 30; // m/s
+    public static final double kMaxA = 40; // m/s^2
 
     /** Turret PID Gains */
     public static final double ARM_KP = 3.5;
