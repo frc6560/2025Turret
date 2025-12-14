@@ -96,7 +96,7 @@ public final class Constants {
         //public static final int RIGHT_FLYWHEEL_MOTOR_ID = 10;
         //public static final int LEFT_FLYWHEEL_MOTOR_ID = 16;
         //public static final int HOOD_MOTOR_ID = 12;
-        public static final String CANIVORE_BUS = "canivore";
+        public static final String CANIVORE_BUS = "";
         
         // Gear Ratios
         public static final double FLYWHEEL_GEAR_RATIO = 25.0 / 24.0;  // 25:24
