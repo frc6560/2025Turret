@@ -44,7 +44,7 @@ public class HoodandFlywheel extends SubsystemBase {
   }
 
   //hardware 
-  private final TalonFX leftFlywheelMotor; 
+  //private final TalonFX leftFlywheelMotor; 
   private final TalonFX rightFlywheelMotor;
   private final TalonFX hoodMotor;
 
@@ -71,12 +71,12 @@ public class HoodandFlywheel extends SubsystemBase {
     this.hoodandflywheelTable = NetworkTableInstance.getDefault().getTable("HoodandFlywheel");
 
     // Initialize hardware
-    this.leftFlywheelMotor = new TalonFX(HoodandFlywheelConstants.LEFT_FLYWHEEL_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
+    //this.leftFlywheelMotor = new TalonFX(HoodandFlywheelConstants.LEFT_FLYWHEEL_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
     this.rightFlywheelMotor = new TalonFX(HoodandFlywheelConstants.RIGHT_FLYWHEEL_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
     this.hoodMotor = new TalonFX(HoodandFlywheelConstants.HOOD_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
 
     // config harware 
-    configureFlywheel(leftFlywheelMotor, false); 
+    //configureFlywheel(leftFlywheelMotor, false); 
     configureFlywheel(rightFlywheelMotor, true);
     configureHood(hoodMotor);
 
@@ -261,7 +261,7 @@ private void configureHood(TalonFX motor) {
       // Convert to rotations per second for Phoenix 6
       double rps = motorRPM / 60.0;
       
-      leftFlywheelMotor.setControl(flywheelVelocityControl.withVelocity(rps));
+      //leftFlywheelMotor.setControl(flywheelVelocityControl.withVelocity(rps));
       rightFlywheelMotor.setControl(flywheelVelocityControl.withVelocity(rps));
   }
   
@@ -293,7 +293,7 @@ private void configureHood(TalonFX motor) {
    * Stops all motors
    */
   public void stopMotors() {
-      leftFlywheelMotor.stopMotor();
+      //leftFlywheelMotor.stopMotor();
       rightFlywheelMotor.stopMotor();
       hoodMotor.stopMotor();
   }
@@ -313,7 +313,7 @@ private void configureHood(TalonFX motor) {
    * Gets current flywheel RPM (accounts for gear ratio)
    */
   public double getFlywheelRPM() {
-      double rps = leftFlywheelMotor.getVelocity().getValueAsDouble();
+      double rps = rightFlywheelMotor.getVelocity().getValueAsDouble();
       double motorRPM = rps * 60.0;
       return motorRPM / HoodandFlywheelConstants.FLYWHEEL_GEAR_RATIO;
   }
