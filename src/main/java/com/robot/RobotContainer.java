@@ -256,7 +256,7 @@ SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.co
     }
 
     public Command getAutonomousCommand() {
-      return lollipopautoslow();
+      return lollipopauto();
     }
   
   
