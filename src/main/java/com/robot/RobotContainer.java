@@ -257,10 +257,10 @@ SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.co
 
     public Command lollipopautofast(){
       return Commands.sequence(
-          autoFactory.resetOdometry("auto1fast"),
-          autoFactory.trajectoryCmd("auto1fast"),
-          autoFactory.trajectoryCmd("auto2fast"),
-          autoFactory.trajectoryCmd("auto3fast")
+          autoFactory.resetOdometry("auto1fast2"),
+          autoFactory.trajectoryCmd("auto1fast2"),
+          autoFactory.trajectoryCmd("auto2fast2"),
+          autoFactory.trajectoryCmd("auto3fast2")
       );
     }
 
