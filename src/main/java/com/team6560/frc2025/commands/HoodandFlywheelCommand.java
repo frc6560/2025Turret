@@ -13,20 +13,19 @@ import com.team6560.frc2025.controls.XboxControls;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class HoodandFlywheelCommand extends Command {
 
-  public enum State {
-    IDLE,      // Spinning at idle RPM (1000)
-    AIMING,    // Aiming at target using global pose + linear regression
-    MANUAL,    // Manual control for testing
-    STOPPED    // Full stop
-}
-
 private final HoodandFlywheel hoodandflywheel;
 private final XboxControls controls;
-private State state = State.IDLE;
 
-// Manual test values
-private double manualRPM = 2500.0;
-private double manualHood = 45.0;
+// Track current state
+private boolean hoodAtTarget = false;  // Hood at 20 degrees
+private boolean flywheelSpinning = false;  // Flywheel spinning
+private double currentRPM = 0.0;  // Current flywheel RPM
+
+// Button press tracking (for single press detection)
+private boolean lastIncreaseButton = false;
+private boolean lastDecreaseButton = false;
+private boolean lastHoodButton = false;
+private boolean lastFlywheelButton = false;
 
   /** Creates a new HoodandFlywheelCommand. */
   public HoodandFlywheelCommand(HoodandFlywheel hoodandflywheel, XboxControls controls) {
@@ -38,77 +37,70 @@ private double manualHood = 45.0;
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    state = State.IDLE;
-    hoodandflywheel.setIdle(); 
+    // Start with everything off
+    hoodAtTarget = false;
+    flywheelSpinning = false;
+    currentRPM = 0.0;
+    hoodandflywheel.stopMotors();
+    System.out.println("HoodandFlywheel initialized - all motors stopped");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     // State transitions based on operator input from XboxControls
-     if (controls.aimhoodandflywheel()) {
-      // Aim using global pose and linear regression
-      state = State.AIMING;
-  } else if (controls.manualhoodandflywheel()) {
-      // Manual mode for testing
-      state = State.MANUAL;
-  } else if (controls.stophoodandflywheel()) {
-      // Stop everything
-      state = State.STOPPED;
-  } else if (controls.idlehoodandflywheel()) {
-      // Return to idle
-      state = State.IDLE;
-  }
-  
-  // Execute based on current state
-  switch (state) {
-      case IDLE:
-          // Spin at idle RPM (1000 RPM)
-          hoodandflywheel.setIdle();
-          break;
-          
-      case AIMING:
-          // Use global pose and linear regression to aim
-          hoodandflywheel.aimhoodandflywheel();
-          break;
-          
-      case MANUAL:
-          // Manual adjustments
-          if (controls.increaseRPM()) {
-              manualRPM += 50;
-          } else if (controls.decreaseRPM()) {
-              manualRPM -= 50;
-          }
-          
-          if (controls.increaseHood()) {
-              manualHood += 1;
-          } else if (controls.decreaseHood()) {
-              manualHood -= 1;
-          }
-          
-          // Clamp values to valid ranges
-          manualRPM = Math.max(0, Math.min(6000, manualRPM));
-          manualHood = Math.max(HoodandFlywheelConstants.HOOD_MIN_ANGLE, 
-                                 Math.min(HoodandFlywheelConstants.HOOD_MAX_ANGLE, manualHood));
-          
-          hoodandflywheel.setFlywheelRPM(manualRPM);
-          hoodandflywheel.setHoodAngle(manualHood);
-          break;
-          
-      case STOPPED:
-          hoodandflywheel.stopMotors();
-          break;
-  }
-  
-  // Zero hood (anytime)
-  if (controls.zeroHood()) {
+    // A button - Move hood to 20 degrees (one-time action)
+    boolean hoodButton = controls.moveHoodTo20();
+    if (hoodButton && !lastHoodButton) {  // Rising edge detection
+      hoodAtTarget = true;
+      hoodandflywheel.setHoodAngle(20.0);
+      System.out.println("Hood moving to 20 degrees");
+    }
+    lastHoodButton = hoodButton;
+
+    // Y button - Spin flywheel to 500 RPM (one-time action)
+    boolean flywheelButton = controls.spinFlywheelTo500();
+    if (flywheelButton && !lastFlywheelButton) {  // Rising edge detection
+      flywheelSpinning = true;
+      currentRPM = 500.0;
+      hoodandflywheel.setFlywheelRPM(currentRPM);
+      System.out.println("Flywheel spinning at 500 RPM");
+    }
+    lastFlywheelButton = flywheelButton;
+
+    // Only allow RPM adjustments if flywheel is spinning
+    if (flywheelSpinning) {
+      // B button - Increase RPM by 50
+      boolean increaseButton = controls.increaseRPM();
+      if (increaseButton && !lastIncreaseButton) {  // Rising edge detection
+        currentRPM += 50;
+        currentRPM = Math.min(currentRPM, 6000);  // Cap at 6000 RPM
+        hoodandflywheel.setFlywheelRPM(currentRPM);
+        System.out.println("Increased RPM to: " + currentRPM);
+      }
+      lastIncreaseButton = increaseButton;
+
+      // X button - Decrease RPM by 50
+      boolean decreaseButton = controls.decreaseRPM();
+      if (decreaseButton && !lastDecreaseButton) {  // Rising edge detection
+        currentRPM -= 50;
+        currentRPM = Math.max(currentRPM, 0);  // Don't go below 0
+        hoodandflywheel.setFlywheelRPM(currentRPM);
+        System.out.println("Decreased RPM to: " + currentRPM);
+      }
+      lastDecreaseButton = decreaseButton;
+    }
+
+    // Zero hood if needed (Start button)
+    if (controls.zeroHood()) {
       hoodandflywheel.zeroHood();
+      System.out.println("Hood encoder zeroed");
+    }
   }
-}
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    hoodandflywheel.setIdle(); 
+    hoodandflywheel.stopMotors();
+    System.out.println("HoodandFlywheel command ended - motors stopped");
   }
 
   // Returns true when the command should end.

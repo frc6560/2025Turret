@@ -55,6 +55,28 @@ public class XboxControls {
      return firstXbox.getLeftTriggerAxis() > 0.25;
     }
 
+// Hood and Flywheel Controls
+// A button - Move hood to 20 degrees
+public boolean moveHoodTo20() {
+    return firstXbox.getAButton();  
+}
+
+// Y button - Spin flywheel to 500 RPM
+public boolean spinFlywheelTo500() {
+    return firstXbox.getYButton();  
+}
+
+// X button - Decrease RPM by 50
+public boolean decreaseRPM() {
+    return firstXbox.getXButton();
+}
+
+// B button - Increase RPM by 50
+public boolean increaseRPM() {
+    return firstXbox.getBButton(); 
+}
+
+// Old functions kept for compatibility (not used in your new setup)
 public boolean aimhoodandflywheel() {
     return firstXbox.getRightTriggerAxis() > 0.25;   
 }
@@ -64,24 +86,15 @@ public boolean manualhoodandflywheel() {
 }
 
 public boolean stophoodandflywheel() {
-    return firstXbox.getAButton();  
+    return false;  // Not used
 }
 
 public boolean idlehoodandflywheel() {
-    return firstXbox.getBButton(); 
+    return false;  // Not used
 }
 
 public boolean zeroHood() {
-    return firstXbox.getYButton();  
-}
-
-// Manual adjustment controls
-public boolean increaseRPM() {
-  return firstXbox.getXButton();
-}
-
-public boolean decreaseRPM() {
-  return firstXbox.getStartButton();
+    return firstXbox.getStartButton();  // Moved to Start button
 }
 
 public boolean increaseHood() {
