@@ -100,8 +100,8 @@ public class HoodandFlywheel extends SubsystemBase {
     System.out.printf("Hood: y = %.2fx + %.2f (R² = %.3f)%n",
         hoodRegression.slope, hoodRegression.intercept, hoodRegression.rSquared);
     
-    // Start at idle
-    setIdle();
+    // Don't call setIdle() here - let the command control initialization
+    // This prevents motors from moving during robot boot
 }
 
 /**
