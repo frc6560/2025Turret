@@ -346,6 +346,7 @@ private void configureHood(TalonFX motor) {
   public double getHoodRegressionQuality() {
       return hoodRegression.rSquared;
   }
+  
 
 
 

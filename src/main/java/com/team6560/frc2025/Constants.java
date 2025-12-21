@@ -92,7 +92,7 @@ public final class Constants {
         public static final int RIGHT_FLYWHEEL_MOTOR_ID = 16;
         public static final int HOOD_MOTOR_ID = 46;
 
-        //anaya's canids
+        //aneya's canids
         //public static final int RIGHT_FLYWHEEL_MOTOR_ID = 10;
         //public static final int LEFT_FLYWHEEL_MOTOR_ID = 16;
         //public static final int HOOD_MOTOR_ID = 12;
@@ -103,7 +103,7 @@ public final class Constants {
         public static final double HOOD_GEAR_RATIO = 25.0;  // 25:1 (25 rotations per 1 degree)
         
         // Idle Mode
-        public static final double IDLE_RPM = 1000.0;
+        public static final double IDLE_RPM = 0.0;
         public static final double HOOD_IDLE_ANGLE = 20.0;
         
         // PID Constants - Flywheel
