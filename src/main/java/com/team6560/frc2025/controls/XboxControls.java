@@ -104,6 +104,10 @@ public boolean increaseHood() {
 public boolean decreaseHood() {
   return firstXbox.getRightBumperButton();
 }
+
+public boolean moveHoodToTestPosition() {
+  return firstXbox.getBackButton();  // Not used in current setup
+}
     
     
 }
