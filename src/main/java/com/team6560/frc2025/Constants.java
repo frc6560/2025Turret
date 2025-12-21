@@ -106,6 +106,11 @@ public final class Constants {
         public static final double IDLE_RPM = 0.0;
         public static final double HOOD_IDLE_ANGLE = 20.0;
         
+
+        // Test Position
+        public static final double FLYWHEEL_TEST_RPM = 100.0;
+        public static final double HOOD_TEST_ANGLE = 45.0;
+        
         // PID Constants - Flywheel
         public static final double FLYWHEEL_KP = 0.1;
         public static final double FLYWHEEL_KI = 0.0;

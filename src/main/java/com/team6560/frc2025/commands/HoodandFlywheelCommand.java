@@ -17,7 +17,8 @@ public class HoodandFlywheelCommand extends Command {
     IDLE,      // Spinning at idle RPM (1000)
     AIMING,    // Aiming at target using global pose + linear regression
     MANUAL,    // Manual control for testing
-    STOPPED    // Full stop
+    STOPPED,    // Full stop
+    TEST_POSITION, // Move to test position
 }
 
 private final HoodandFlywheel hoodandflywheel;
@@ -45,8 +46,10 @@ private double manualHood = 45.0;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (controls.moveHoodToTestPosition()) {
+      state = State.TEST_POSITION;
      // State transitions based on operator input from XboxControls
-     if (controls.aimhoodandflywheel()) {
+    } else if (controls.aimhoodandflywheel()) {
       // Aim using global pose and linear regression
       state = State.AIMING;
   } else if (controls.manualhoodandflywheel()) {
@@ -58,6 +61,7 @@ private double manualHood = 45.0;
   } else if (controls.idlehoodandflywheel()) {
       // Return to idle
       state = State.IDLE;
+
   }
   
   // Execute based on current state
@@ -66,6 +70,15 @@ private double manualHood = 45.0;
           // Spin at idle RPM (1000 RPM)
           hoodandflywheel.setIdle();
           break;
+        
+        case TEST_POSITION:
+            // Move to test position
+            hoodandflywheel.setHoodAngle(HoodandFlywheelConstants.HOOD_TEST_ANGLE);
+            hoodandflywheel.setFlywheelRPM(HoodandFlywheelConstants.FLYWHEEL_TEST_RPM);
+            break;
+
+
+    
           
       case AIMING:
           // Use global pose and linear regression to aim

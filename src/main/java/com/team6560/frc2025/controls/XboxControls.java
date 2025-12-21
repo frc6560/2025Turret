@@ -77,7 +77,7 @@ public boolean zeroHood() {
 
 // Manual adjustment controls
 public boolean increaseRPM() {
-  return firstXbox.getXButton();
+  return firstXbox.getYButton();
 }
 
 public boolean decreaseRPM() {
@@ -90,6 +90,11 @@ public boolean increaseHood() {
 
 public boolean decreaseHood() {
   return firstXbox.getRightBumperButton();
+}
+
+public boolean moveHoodToTestPosition() {
+  // TODO Auto-generated method stub
+  return firstXbox.getXButton();
 }
     
     
