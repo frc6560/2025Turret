@@ -42,7 +42,7 @@ private boolean lastFlywheelButton = false;
     flywheelSpinning = false;
     currentRPM = 0.0;
     hoodandflywheel.stopMotors();
-    System.out.println("HoodandFlywheel initialized - all motors stopped");
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -52,10 +52,10 @@ private boolean lastFlywheelButton = false;
     boolean hoodButton = controls.moveHoodTo20();
     if (hoodButton && !lastHoodButton) {  
       hoodAtTarget = true;
-      setHoodAngle(); 
-            //hoodandflywheel.setHoodAngle(20.0); 
+      //setHoodAngle(); 
+      hoodandflywheel.setHoodAngle(20.0); 
             
-            System.out.println("Hood moving to 20 degrees");
+            
           }
           lastHoodButton = hoodButton;
       

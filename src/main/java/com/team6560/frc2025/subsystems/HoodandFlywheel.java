@@ -4,10 +4,12 @@
 
 package com.team6560.frc2025.subsystems;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -18,10 +20,12 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.team6560.frc2025.Constants.HoodandFlywheelConstants;
+import com.team6560.frc2025.Constants.WristConstants;
 import com.team6560.frc2025.subsystems.swervedrive.SwerveSubsystem;
 
 public class HoodandFlywheel extends SubsystemBase {
@@ -48,37 +52,62 @@ public class HoodandFlywheel extends SubsystemBase {
   private final TalonFX rightFlywheelMotor;
   private final TalonFX hoodMotor;
 
-  // Motor controls 
-  private final VelocityVoltage flywheelVelocityControl;
-  private final PositionVoltage hoodPositionControl;
-
-  //Drivetrain reference for pose 
-  private final SwerveSubsystem drivetrain;
-
-  // linear regression models 
-  private final RegressionCoefficients rpmRegression;
-  private final RegressionCoefficients hoodRegression;
-
-  // current targets 
-  private double targetRPM = HoodandFlywheelConstants.IDLE_RPM; 
-  private double targetHoodAngle = HoodandFlywheelConstants.HOOD_IDLE_ANGLE;
-
-  //Netwrork table 
-  private final NetworkTable hoodandflywheelTable;
-  /** Creates a new HoodandFlywheel. */
-  public HoodandFlywheel(SwerveSubsystem drivebase) {
-    this.drivetrain = drivebase;
-    this.hoodandflywheelTable = NetworkTableInstance.getDefault().getTable("HoodandFlywheel");
-
-    // Initialize hardware
-    //this.leftFlywheelMotor = new TalonFX(HoodandFlywheelConstants.LEFT_FLYWHEEL_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
-    this.rightFlywheelMotor = new TalonFX(HoodandFlywheelConstants.RIGHT_FLYWHEEL_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
-    this.hoodMotor = new TalonFX(HoodandFlywheelConstants.HOOD_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
+  private CANcoder absoluteEncoder; 
+  private double initialEncoderPos; 
+    private TalonFXConfiguration fxConfig; 
+  
+    // Motor controls 
+    private final VelocityVoltage flywheelVelocityControl;
+    private final PositionVoltage hoodPositionControl;
+  
+    //Drivetrain reference for pose 
+    private final SwerveSubsystem drivetrain;
+  
+    // linear regression models 
+    private final RegressionCoefficients rpmRegression;
+    private final RegressionCoefficients hoodRegression;
+  
+    // current targets 
+    private double targetRPM = HoodandFlywheelConstants.IDLE_RPM; 
+    private double targetHoodAngle = HoodandFlywheelConstants.HOOD_IDLE_ANGLE;
+  
+    //Netwrork table 
+    private final NetworkTable hoodandflywheelTable;
+    private final CANcoder hoodEncoder;
+      /** Creates a new HoodandFlywheel. */
+      public HoodandFlywheel(SwerveSubsystem drivebase) {
+        this.drivetrain = drivebase;
+        this.hoodandflywheelTable = NetworkTableInstance.getDefault().getTable("HoodandFlywheel");
+    
+        // Initialize hardware
+        //this.leftFlywheelMotor = new TalonFX(HoodandFlywheelConstants.LEFT_FLYWHEEL_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
+        this.rightFlywheelMotor = new TalonFX(HoodandFlywheelConstants.RIGHT_FLYWHEEL_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
+        this.hoodMotor = new TalonFX(HoodandFlywheelConstants.HOOD_MOTOR_ID, HoodandFlywheelConstants.CANIVORE_BUS);
+    
+        this.hoodEncoder = new CANcoder(HoodandFlywheelConstants.HOOD_CANCODER_ID, HoodandFlywheelConstants.CANIVORE_BUS);
+  
+        
 
     // config harware 
     //configureFlywheel(leftFlywheelMotor, false); 
     configureFlywheel(rightFlywheelMotor, true);
     configureHood(hoodMotor);
+    configureCANCoder(hoodEncoder);
+
+    double absoluteRotations = hoodEncoder.getAbsolutePosition().getValueAsDouble();
+    //initialEncoderPos = 0.0; 
+    //double hoodDegrees = absolutePosition * 360.0; 
+    //double motorRotations = hoodDegrees * HoodandFlywheelConstants.HOOD_GEAR_RATIO;
+
+    // this.fxConfig = new TalonFXConfiguration();
+    //   fxConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    //   fxConfig.Feedback.RotorToSensorRatio = 108;
+    //   fxConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    //   hoodMotor.getConfigurator().apply(fxConfig);
+
+    hoodMotor.setPosition(absoluteRotations);
 
     // Initialize motor controls
     flywheelVelocityControl = new VelocityVoltage(0).withSlot(0);
@@ -103,6 +132,15 @@ public class HoodandFlywheel extends SubsystemBase {
     // Don't call setIdle() here - let the command control initialization
     // This prevents motors from moving during robot boot
 }
+
+private void configureCANCoder(CANcoder encoder) {
+    CANcoderConfiguration config = new CANcoderConfiguration();
+    
+
+    encoder.getConfigurator().apply(config);
+}
+
+
 
 /**
  * Calculates linear regression coefficients using least squares method
@@ -201,10 +239,10 @@ private void configureHood(TalonFX motor) {
     // Soft limits
     config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 
-        HoodandFlywheelConstants.HOOD_MAX_ANGLE * HoodandFlywheelConstants.HOOD_GEAR_RATIO;
+        HoodandFlywheelConstants.HOOD_MAX_ANGLE / 360;
     config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 
-        HoodandFlywheelConstants.HOOD_MIN_ANGLE * HoodandFlywheelConstants.HOOD_GEAR_RATIO;
+        HoodandFlywheelConstants.HOOD_MIN_ANGLE  / 360;
     
         motor.getConfigurator().apply(config);
     }
@@ -229,10 +267,13 @@ private void configureHood(TalonFX motor) {
       // Clamp hood angle to limits
       targetHoodAngle = Math.max(HoodandFlywheelConstants.HOOD_MIN_ANGLE, 
                                    Math.min(HoodandFlywheelConstants.HOOD_MAX_ANGLE, targetHoodAngle));
+
       
       // Set motors
       setFlywheelRPM(targetRPM);
-      setHoodAngle(targetHoodAngle);
+     // setHoodAngle(targetHoodAngle);
+     setHoodAngle(20); //new
+
       
       // Telemetry
       SmartDashboard.putNumber("Shooter/Distance", distance);
@@ -274,10 +315,21 @@ private void configureHood(TalonFX motor) {
                         Math.min(HoodandFlywheelConstants.HOOD_MAX_ANGLE, degrees));
       
       // Convert to motor rotations (25:1 gear ratio)
-      double motorRotations = degrees * HoodandFlywheelConstants.HOOD_GEAR_RATIO;
+      double targetRotations = degrees / HoodandFlywheelConstants.HOOD_GEAR_RATIO;
+
+      double currentRotations = hoodEncoder.getPosition().getValueAsDouble();
+
+      double error = targetRotations - currentRotations;
+
+      if (Math.abs(error)< HoodandFlywheelConstants.HOOD_TOLERANCE / HoodandFlywheelConstants.HOOD_GEAR_RATIO){
+        hoodMotor.setControl(hoodPositionControl.withPosition(currentRotations));
+        return; // Already at target
+      }
       
-     // hoodMotor.setControl(hoodPositionControl.withPosition(motorRotations));
-      hoodMotor.setPosition(20); 
+     hoodMotor.setControl(hoodPositionControl.withPosition(targetRotations));
+      //hoodMotor.setPosition(20);
+
+      
   }
   
   /**
@@ -323,9 +375,21 @@ private void configureHood(TalonFX motor) {
    * Gets current hood angle in degrees (accounts for gear ratio)
    */
   public double getHoodAngle() {
-      double motorRotations = hoodMotor.getPosition().getValueAsDouble();
-      return motorRotations / HoodandFlywheelConstants.HOOD_GEAR_RATIO;
+     // double motorRotations = hoodMotor.getPosition().getValueAsDouble();
+     // return motorRotations / HoodandFlywheelConstants.HOOD_GEAR_RATIO;
+     //return motorRotations * 360.0; 
+     return hoodEncoder.getPosition().getValueAsDouble() / HoodandFlywheelConstants.HOOD_GEAR_RATIO * 360; 
+    
       
+  }
+
+  public double getHoodPosition(){
+    return hoodMotor.getPosition().getValueAsDouble();
+  }
+
+  public void setEncoderPosition(double position){
+    hoodMotor.setPosition(0.0);
+    this.hoodEncoder.setPosition(0.0);
   }
   
   /**
@@ -333,6 +397,7 @@ private void configureHood(TalonFX motor) {
    */
   public void zeroHood() {
       hoodMotor.setPosition(0);
+      hoodEncoder.setPosition(0);
   }
   
   /**
@@ -348,6 +413,7 @@ private void configureHood(TalonFX motor) {
   public double getHoodRegressionQuality() {
       return hoodRegression.rSquared;
   }
+
   
 
 

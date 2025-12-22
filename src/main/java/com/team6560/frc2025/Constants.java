@@ -174,6 +174,7 @@ public final class Constants {
             25,  // 4.5m
             20   // 5.0m - flat angle
         };
+        public static final int HOOD_CANCODER_ID = 0;
     }
   public static final class ElevatorConstants {
 
