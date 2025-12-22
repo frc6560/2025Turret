@@ -53,7 +53,7 @@ private boolean lastFlywheelButton = false;
     if (hoodButton && !lastHoodButton) {  
       hoodAtTarget = true;
       //setHoodAngle(); 
-      hoodandflywheel.setHoodAngle(20.0); 
+      hoodandflywheel.setHoodAngle(45); 
             
             
           }
