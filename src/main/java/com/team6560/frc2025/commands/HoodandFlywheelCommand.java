@@ -9,6 +9,7 @@ import com.team6560.frc2025.subsystems.HoodandFlywheel;
 import com.team6560.frc2025.Constants.HoodandFlywheelConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import com.team6560.frc2025.controls.XboxControls;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class HoodandFlywheelCommand extends Command {
@@ -42,7 +43,12 @@ private boolean lastFlywheelButton = false;
     flywheelSpinning = false;
     currentRPM = 0.0;
     hoodandflywheel.stopMotors();
+    
+    // Put default target RPM on Shuffleboard so you can edit it
+    SmartDashboard.putNumber("Flywheel Target RPM", 500.0);
+    
     System.out.println("HoodandFlywheel initialized - all motors stopped");
+    System.out.println("Use Shuffleboard to set 'Flywheel Target RPM' and press Y button to spin");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -57,13 +63,16 @@ private boolean lastFlywheelButton = false;
     }
     lastHoodButton = hoodButton;
 
-    // Y button - Spin flywheel to 500 RPM (one-time action)
+    // Y button - Spin flywheel to RPM from Shuffleboard
     boolean flywheelButton = controls.spinFlywheelTo500();
     if (flywheelButton && !lastFlywheelButton) {  // Rising edge detection
       flywheelSpinning = true;
-      currentRPM = 500.0;
+      // Read target RPM from Shuffleboard instead of hardcoded 500
+      currentRPM = SmartDashboard.getNumber("Flywheel Target RPM", 500.0);
+      // Safety: Clamp to 0-6000 RPM to prevent damage
+      currentRPM = Math.max(0, Math.min(6000, currentRPM));
       hoodandflywheel.setFlywheelRPM(currentRPM);
-      System.out.println("Flywheel spinning at 500 RPM");
+      System.out.println("Flywheel spinning at " + currentRPM + " RPM (from Shuffleboard)");
     }
     lastFlywheelButton = flywheelButton;
 
@@ -88,6 +97,11 @@ private boolean lastFlywheelButton = false;
         System.out.println("Decreased RPM to: " + currentRPM);
       }
       lastDecreaseButton = decreaseButton;
+    }
+
+    // Update Shuffleboard with current RPM while running
+    if (flywheelSpinning) {
+      SmartDashboard.putNumber("Flywheel Current RPM", hoodandflywheel.getFlywheelRPM());
     }
 
     // Zero hood if needed (Start button)
