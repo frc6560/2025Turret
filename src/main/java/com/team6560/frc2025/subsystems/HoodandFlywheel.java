@@ -430,6 +430,8 @@ private void configureHood(TalonFX motor) {
     hoodandflywheelTable.getEntry("hood").setDouble(getHoodAngle());
     hoodandflywheelTable.getEntry("ready").setBoolean(isReadyToShoot());
     hoodandflywheelTable.getEntry("encoder").setDouble(getHoodPosition());
+
+    SmartDashboard.putNumber("Shooter/CANcoder Absolute Position", hoodEncoder.getAbsolutePosition().getValueAsDouble());
 }
     // This method will be called once per scheduler run
   
