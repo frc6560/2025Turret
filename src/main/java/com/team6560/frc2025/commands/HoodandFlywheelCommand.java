@@ -5,7 +5,7 @@
 package com.team6560.frc2025.commands;
 
 import com.team6560.frc2025.subsystems.HoodandFlywheel;
-
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.team6560.frc2025.Constants.HoodandFlywheelConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import com.team6560.frc2025.controls.XboxControls;
@@ -50,53 +50,60 @@ private boolean lastFlywheelButton = false;
   public void execute() {
     // A button - Move hood to 20 degrees (one-time action)
     boolean hoodButton = controls.moveHoodTo20();
-    if (hoodButton && !lastHoodButton) {  // Rising edge detection
+    if (hoodButton && !lastHoodButton) {  
       hoodAtTarget = true;
-      hoodandflywheel.setHoodAngle(20.0);
-      System.out.println("Hood moving to 20 degrees");
-    }
-    lastHoodButton = hoodButton;
-
-    // Y button - Spin flywheel to 500 RPM (one-time action)
-    boolean flywheelButton = controls.spinFlywheelTo500();
-    if (flywheelButton && !lastFlywheelButton) {  // Rising edge detection
-      flywheelSpinning = true;
-      currentRPM = 500.0;
-      hoodandflywheel.setFlywheelRPM(currentRPM);
-      System.out.println("Flywheel spinning at 500 RPM");
-    }
-    lastFlywheelButton = flywheelButton;
-
-    // Only allow RPM adjustments if flywheel is spinning
-    if (flywheelSpinning) {
-      // B button - Increase RPM by 50
-      boolean increaseButton = controls.increaseRPM();
-      if (increaseButton && !lastIncreaseButton) {  // Rising edge detection
-        currentRPM += 50;
-        currentRPM = Math.min(currentRPM, 6000);  // Cap at 6000 RPM
-        hoodandflywheel.setFlywheelRPM(currentRPM);
-        System.out.println("Increased RPM to: " + currentRPM);
-      }
-      lastIncreaseButton = increaseButton;
-
-      // X button - Decrease RPM by 50
-      boolean decreaseButton = controls.decreaseRPM();
-      if (decreaseButton && !lastDecreaseButton) {  // Rising edge detection
-        currentRPM -= 50;
-        currentRPM = Math.max(currentRPM, 0);  // Don't go below 0
-        hoodandflywheel.setFlywheelRPM(currentRPM);
-        System.out.println("Decreased RPM to: " + currentRPM);
-      }
-      lastDecreaseButton = decreaseButton;
-    }
-
-    // Zero hood if needed (Start button)
-    if (controls.zeroHood()) {
-      hoodandflywheel.zeroHood();
-      System.out.println("Hood encoder zeroed");
-    }
-  }
-  // Called once the command ends or is interrupted.
+      setHoodAngle(); 
+            //hoodandflywheel.setHoodAngle(20.0); 
+            
+            System.out.println("Hood moving to 20 degrees");
+          }
+          lastHoodButton = hoodButton;
+      
+          // Y button - Spin flywheel to 500 RPM (one-time action)
+          boolean flywheelButton = controls.spinFlywheelTo500();
+          if (flywheelButton && !lastFlywheelButton) {  // Rising edge detection
+            flywheelSpinning = true;
+            currentRPM = 500.0;
+            hoodandflywheel.setFlywheelRPM(currentRPM);
+            System.out.println("Flywheel spinning at 500 RPM");
+          }
+          lastFlywheelButton = flywheelButton;
+      
+          // Only allow RPM adjustments if flywheel is spinning
+          if (flywheelSpinning) {
+            // B button - Increase RPM by 50
+            boolean increaseButton = controls.increaseRPM();
+            if (increaseButton && !lastIncreaseButton) {  // Rising edge detection
+              currentRPM += 50;
+              currentRPM = Math.min(currentRPM, 6000);  // Cap at 6000 RPM
+              hoodandflywheel.setFlywheelRPM(currentRPM);
+              System.out.println("Increased RPM to: " + currentRPM);
+            }
+            lastIncreaseButton = increaseButton;
+      
+            // X button - Decrease RPM by 50
+            boolean decreaseButton = controls.decreaseRPM();
+            if (decreaseButton && !lastDecreaseButton) {  // Rising edge detection
+              currentRPM -= 50;
+              currentRPM = Math.max(currentRPM, 0);  // Don't go below 0
+              hoodandflywheel.setFlywheelRPM(currentRPM);
+              System.out.println("Decreased RPM to: " + currentRPM);
+            }
+            lastDecreaseButton = decreaseButton;
+          }
+      
+          // Zero hood if needed (Start button)
+          if (controls.zeroHood()) {
+            hoodandflywheel.zeroHood();
+            System.out.println("Hood encoder zeroed");
+          }
+        }
+        private void setHoodAngle() {
+          // TODO Auto-generated method stub
+          throw new UnsupportedOperationException("Unimplemented method 'setHoodAngle'");
+        }
+      
+        // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     hoodandflywheel.stopMotors();

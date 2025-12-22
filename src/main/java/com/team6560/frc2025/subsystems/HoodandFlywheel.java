@@ -276,7 +276,8 @@ private void configureHood(TalonFX motor) {
       // Convert to motor rotations (25:1 gear ratio)
       double motorRotations = degrees * HoodandFlywheelConstants.HOOD_GEAR_RATIO;
       
-      hoodMotor.setControl(hoodPositionControl.withPosition(motorRotations));
+     // hoodMotor.setControl(hoodPositionControl.withPosition(motorRotations));
+      hoodMotor.setPosition(20); 
   }
   
   /**
@@ -324,6 +325,7 @@ private void configureHood(TalonFX motor) {
   public double getHoodAngle() {
       double motorRotations = hoodMotor.getPosition().getValueAsDouble();
       return motorRotations / HoodandFlywheelConstants.HOOD_GEAR_RATIO;
+      
   }
   
   /**
