@@ -89,9 +89,10 @@ private boolean lastFlywheelButton = false;
       lastIncreaseButton = increaseButton;
 
       // X button - Decrease RPM by 50
-      boolean decreaseButton = controls.decreaseRPM();
+      //update: set rpm to 3000
+      boolean decreaseButton = controls.setRpm3000();
       if (decreaseButton && !lastDecreaseButton) {  // Rising edge detection
-        currentRPM -= 50;
+        currentRPM = 3000;
         currentRPM = Math.max(currentRPM, 0);  // Don't go below 0
         hoodandflywheel.setFlywheelRPM(currentRPM);
         System.out.println("Decreased RPM to: " + currentRPM);

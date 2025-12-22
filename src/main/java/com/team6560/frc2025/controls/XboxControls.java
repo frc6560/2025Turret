@@ -67,7 +67,7 @@ public boolean spinFlywheelTo500() {
 }
 
 // X button - Decrease RPM by 50
-public boolean decreaseRPM() {
+public boolean setRpm3000() {
     return firstXbox.getXButton();
 }
 
