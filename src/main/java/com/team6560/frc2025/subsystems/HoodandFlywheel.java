@@ -429,6 +429,7 @@ private void configureHood(TalonFX motor) {
     hoodandflywheelTable.getEntry("rpm").setDouble(getFlywheelRPM());
     hoodandflywheelTable.getEntry("hood").setDouble(getHoodAngle());
     hoodandflywheelTable.getEntry("ready").setBoolean(isReadyToShoot());
+    hoodandflywheelTable.getEntry("encoder").setDouble(getHoodPosition());
 }
     // This method will be called once per scheduler run
   
