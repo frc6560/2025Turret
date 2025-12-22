@@ -68,7 +68,7 @@ private boolean lastFlywheelButton = false;
     if (flywheelButton && !lastFlywheelButton) {  // Rising edge detection
       flywheelSpinning = true;
       // Read target RPM from Shuffleboard instead of hardcoded 500
-      currentRPM = SmartDashboard.getNumber("Flywheel Target RPM", 500.0);
+      currentRPM = SmartDashboard.getNumber("Flywheel Target RPM", 1000.0);
       // Safety: Clamp to 0-6000 RPM to prevent damage
       currentRPM = Math.max(0, Math.min(6000, currentRPM));
       hoodandflywheel.setFlywheelRPM(currentRPM);
