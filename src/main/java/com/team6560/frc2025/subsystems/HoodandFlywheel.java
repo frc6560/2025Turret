@@ -135,7 +135,8 @@ public class HoodandFlywheel extends SubsystemBase {
 
 private void configureCANCoder(CANcoder encoder) {
     CANcoderConfiguration config = new CANcoderConfiguration();
-    config.MagnetSensor.MagnetOffset = 0.35; 
+    
+
     encoder.getConfigurator().apply(config);
 }
 
@@ -314,8 +315,7 @@ private void configureHood(TalonFX motor) {
                         Math.min(HoodandFlywheelConstants.HOOD_MAX_ANGLE, degrees));
       
       // Convert to motor rotations (25:1 gear ratio)
-      //double targetRotations = degrees / HoodandFlywheelConstants.HOOD_GEAR_RATIO;
-      double targetRotations = (45.0/360.0) / HoodandFlywheelConstants.HOOD_GEAR_RATIO; //new
+      double targetRotations = degrees / HoodandFlywheelConstants.HOOD_GEAR_RATIO;
 
       double currentRotations = hoodEncoder.getPosition().getValueAsDouble();
 
